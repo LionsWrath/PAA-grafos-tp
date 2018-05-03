@@ -5,6 +5,8 @@
 #include <queue>
 #include <set>
 
+#include <stack>
+
 #define INF 10000000000000000
 #define WHITE -1
 
@@ -19,7 +21,7 @@ typedef unordered_map<int, lli> umap;
 
 int V, E;
 vector<vll> distances;
-vector<umap> adjList;
+vector<umap> adjList, tAdjList;
 set<int> united, intersect;
 
 int dfs_counter;
@@ -73,33 +75,38 @@ vector<umap> createSubgraph(vector<umap>& adjList, const set<int>& edges) {
     return newAdjList;
 }
 
-vector<umap> transpose(vector<umap>& adjList) {
-    vector<umap> newAdjList(V, umap());
-    for (int i=0; i<V; i++) {
-        for (auto& c : adjList[i]) {
-            newAdjList[c.first][i] = lli(c.second); 
-        }
-    }
-
-    return newAdjList;
-}
-
 void bridges(vector<umap>& adjList, int u) {
-    dfs_low[u] = dfs_num[u] = dfs_counter++;
+    stack<int> nodes;  
+    nodes.push(u);
 
-    for (auto& c : adjList[u]) {
-        if (dfs_num[c.first] == WHITE) {
-            dfs_parent[c.first] = u;
-            bridges(adjList, c.first);
+    do {
+        u = nodes.top();
+        nodes.pop();
 
-            if (dfs_low[c.first] > dfs_num[u])
-                intersect.insert(adjList[u][c.first].second);
+        if (dfs_num[u] == WHITE) {
 
-            dfs_low[u] = min(dfs_low[u], dfs_low[c.first]);
-        } else if (c.first != dfs_parent[u]) {
-            dfs_low[u] = min(dfs_low[u], dfs_num[c.first]);
+            dfs_low[u] = dfs_counter;
+            dfs_num[u] = dfs_counter++;
+
+            nodes.push(u);
+
+            for (auto &c : adjList[u]) {
+                if (dfs_num[c.first] == WHITE) {
+                    nodes.push(c.first);
+                    dfs_parent[c.first] = u;
+                 }
+            }
+        } else {
+            for (auto &c : adjList[u]) {
+                if (c.first != dfs_parent[u]) {
+                    if (dfs_low[c.first] > dfs_num[u])
+                        intersect.insert(adjList[u][c.first].second);
+
+                    dfs_low[u] = min(dfs_low[u], dfs_low[c.first]);
+                }
+            }
         }
-    }
+    } while (!nodes.empty());
 }
 
 void findBridges(vector<umap>& adjList, int u) {
@@ -151,6 +158,7 @@ int main() {
     cin >> V >> E;
     
     adjList.resize(V, umap());
+    tAdjList.resize(V, umap());
     distances.resize(2, vll());
 
     for (int i=0; i<E; i++) {
@@ -159,12 +167,12 @@ int main() {
 
         cin >> X >> Y >> W;
 
-        adjList[X-1][Y-1] = lli(W, i + 1);
+        adjList[X-1][Y-1]  = lli(W, i + 1);
+        tAdjList[Y-1][X-1] = lli(W, i + 1);
     }
 
-    dijkstra(adjList, distances[0], 0);
-    vector<umap> transposed = transpose(adjList);
-    dijkstra(transposed, distances[1], V-1);
+    dijkstra( adjList, distances[0], 0);
+    dijkstra(tAdjList, distances[1], V-1);
 
     union_check(adjList, distances);
 

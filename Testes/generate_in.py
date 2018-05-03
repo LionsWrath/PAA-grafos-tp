@@ -1,5 +1,5 @@
-# This generator creates a graph with V vertexes and (4*(V-1))/3 edges and has only minimum paths
-# More exactly, 2^((V-1)/2) minimum paths with ALWAYS the same weight
+# This generator creates a graph with V vertexes and 5*((V-1)/4) edges and has only minimum paths
+# More exactly, 2^((V-1)/2) minimum paths with ALWAYS the same weight and multiple cycles
 
 import sys
 import argparse
@@ -11,10 +11,10 @@ parser.add_argument('--answer', action="store_true", default=False, help="Print 
 args = parser.parse_args()
 
 V = args.v
-E = int(4*(V - 1)/3)
+E = int(5*(V - 1)/4)
 
-if (V-1)%3 != 0:
-    raise Exception("This graph only accepts a number of Vertexes that respects (V-1)%3 == 0")
+if (V-1)%4 != 0:
+    raise Exception("This graph only accepts a number of Vertexes that respects (V-1)%4 == 0")
 
 if not args.answer:
     print(V, E)
@@ -31,14 +31,25 @@ if not args.answer:
 
         print(lower, middle, 1)
         print(upper, middle, 1)
+        print(middle, middle+1, 1)
+
+        middle = middle + 1
 else:
+    I = list(filter(lambda x: (x+1)%5 == 0, range(E)))
     print(E)
     for i in range(E):
         print(i+1, end="", flush=True)
 
         if i != E-1:
             print(" ", end="", flush=True)
-    
+
     print( )
-    print(0)
+    print(len(I))
+    for i in I:
+        print(i+1, end="", flush=True)
+
+        if i != I[len(I)-1]:
+            print(" ", end="", flush=True)
     print( )
+
+

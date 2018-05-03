@@ -1,5 +1,5 @@
-# This generator creates a graph with V vertexes and (4*(V-1))/3 edges and has only minimum paths
-# More exactly, 2^((V-1)/2) minimum paths with ALWAYS the same weight
+# This generator creates a graph with a unique path with V-1 edges.
+# This one is a super test of overflow and memory (if using something recursive)
 
 import sys
 import argparse
@@ -11,26 +11,16 @@ parser.add_argument('--answer', action="store_true", default=False, help="Print 
 args = parser.parse_args()
 
 V = args.v
-E = int(4*(V - 1)/3)
-
-if (V-1)%3 != 0:
-    raise Exception("This graph only accepts a number of Vertexes that respects (V-1)%3 == 0")
+E = V-1
 
 if not args.answer:
     print(V, E)
 
     middle = 1
     while middle != V:
-        lower = middle + 1
-        upper = middle + 2
-        
-        print(middle, lower, 1)
-        print(middle, upper, 1)
+        print(middle, middle+1, 1000000)
 
-        middle = middle + 3
-
-        print(lower, middle, 1)
-        print(upper, middle, 1)
+        middle = middle + 1
 else:
     print(E)
     for i in range(E):
@@ -40,5 +30,11 @@ else:
             print(" ", end="", flush=True)
     
     print( )
-    print(0)
+    print(E)
+    for i in range(E):
+        print(i+1, end="", flush=True)
+
+        if i != E-1:
+            print(" ", end="", flush=True)
+ 
     print( )

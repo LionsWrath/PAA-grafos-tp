@@ -1,5 +1,6 @@
 # This generator creates a graph with V vertexes and (4*(V-1))/3 edges and has only minimum paths
 # More exactly, 2^((V-1)/2) minimum paths with ALWAYS the same weight
+# The weight is higher in this version to test overflow
 
 import sys
 import argparse
@@ -24,13 +25,13 @@ if not args.answer:
         lower = middle + 1
         upper = middle + 2
         
-        print(middle, lower, 1)
-        print(middle, upper, 1)
+        print(middle, lower, 1000000)
+        print(middle, upper, 1000000)
 
         middle = middle + 3
 
-        print(lower, middle, 1)
-        print(upper, middle, 1)
+        print(lower, middle, 1000000)
+        print(upper, middle, 1000000)
 else:
     print(E)
     for i in range(E):

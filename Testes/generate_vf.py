@@ -25,11 +25,11 @@ if not args.answer:
         for idx,w in enumerate(val[1:V-i]):
             print(i+1, idx + i + 2, w)
 else:
-    print(V)
-    for i in range(V):
+    print(E)
+    for i in range(E):
         print(i+1, end="", flush=True)
 
-        if i != V-1:
+        if i != E-1:
             print(" ", end="", flush=True)
     
     print( )
