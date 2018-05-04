@@ -5,5 +5,5 @@ tests=('2e_100000_133332' '2e_10000_13332' 'cy_100000_133332' 'in_80001_100000' 
 for ((sz=0; sz<${#tests[@]}; sz++)) do
     test=${tests[${sz}]}
 
-    time ../../a.out < ${test}.txt | diff ${test}.out -
+    time ../../a.out < ${test}.in | diff ${test}.out -
 done

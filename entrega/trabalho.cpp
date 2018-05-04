@@ -14,6 +14,7 @@ using namespace std;
 
 typedef long long ll;
 typedef pair<ll, int> lli;
+typedef pair<int, int> ii;
 typedef vector<lli> vlli;
 typedef vector<int> vi;
 typedef vector<ll> vll;
@@ -76,35 +77,35 @@ vector<umap> createSubgraph(vector<umap>& adjList, const set<int>& edges) {
 }
 
 void bridges(vector<umap>& adjList, int u) {
-    stack<int> nodes;  
-    nodes.push(u);
+    stack<pair<int,int>> nodes;  
+    nodes.push(ii(u,-1));
 
     do {
-        u = nodes.top();
+        int v = nodes.top().first;
+        int p = nodes.top().second;
         nodes.pop();
 
-        if (dfs_num[u] == WHITE) {
+        if (dfs_num[v] == WHITE) {
 
-            dfs_low[u] = dfs_counter;
-            dfs_num[u] = dfs_counter++;
+            dfs_parent[v] = p;
+            dfs_low[v] = dfs_counter;
+            dfs_num[v] = dfs_counter++;
 
-            nodes.push(u);
+            nodes.push(ii(v,p));
 
-            for (auto &c : adjList[u]) {
+            for (auto &c : adjList[v]) {
                 if (dfs_num[c.first] == WHITE) {
-                    nodes.push(c.first);
-                    dfs_parent[c.first] = u;
-                 }
-            }
-        } else {
-            for (auto &c : adjList[u]) {
-                if (c.first != dfs_parent[u]) {
-                    if (dfs_low[c.first] > dfs_num[u])
-                        intersect.insert(adjList[u][c.first].second);
-
-                    dfs_low[u] = min(dfs_low[u], dfs_low[c.first]);
+                    nodes.push(ii(c.first, v));
+                } else if (c.first != dfs_parent[v]) {
+                    dfs_low[v] = min(dfs_low[v], dfs_num[c.first]);
                 }
             }
+        } else {
+            if (dfs_low[v] > dfs_num[p]) {
+                intersect.insert(adjList[p][v].second);
+            }
+
+            dfs_low[p] = min(dfs_low[p], dfs_low[v]);
         }
     } while (!nodes.empty());
 }

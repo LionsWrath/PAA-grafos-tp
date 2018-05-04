@@ -1,5 +1,5 @@
 # This generator creates a graph with V vertexes and 5*((V-1)/4) edges and has only minimum paths
-# More exactly, 2^((V-1)/2) minimum paths with ALWAYS the same weight and multiple cycles
+# More exactly, 2^((V-1)/2) minimum paths with ALWAYS the same weight and multiple bridges
 
 import sys
 import argparse
